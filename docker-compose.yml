@@ -1,0 +1,15 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"  # Porta para acessar a interface de gerenciamento
+      - "5672:5672"    # Porta do RabbitMQ para comunicação com a API Node.js
+    environment:
+      RABBITMQ_DEFAULT_USER: user  # Usuário padrão
+      RABBITMQ_DEFAULT_PASS: password  # Senha padrão
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Para persistir os dados do RabbitMQ
+
+volumes:
+  rabbitmq_data:
