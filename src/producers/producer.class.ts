@@ -1,32 +1,19 @@
 import rbmq from "amqplib"
+import { PubSubEntity, Publisher } from "../generics"
 
-export class Producer{
-    private connectionSocket: rbmq.Connection | undefined
+export class Producer extends PubSubEntity implements Publisher{
 
     constructor(){
-        this.connect()
+        super()
     }
 
 
-    private async connect(){
-        try {
-            const conection = await rbmq.connect({
-                password: "password",
-                username: "user"
-            })
-
-            this.connectionSocket = conection
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async sendMessage(){
-        if (this.connectionSocket === undefined){
+    async sendMessage(queue: string, message: any, data: any){
+        if (this.connection === undefined){
             throw new Error("cannot conect without a proper connetion socket")
         }
 
-        const channel = await this.connectionSocket.createChannel()
+        const channel = await this.connection.createChannel()
 
         if (!channel){
             throw new Error("cannot connect to a channel")

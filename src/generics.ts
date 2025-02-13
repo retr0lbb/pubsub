@@ -3,11 +3,11 @@ import rbmq, { type Connection } from "amqplib"
 interface pubSub{
     connect: () => Promise<void>,
 }
-export interface Publisher<T> extends pubSub {
-    sendMessage: Promise<(queue: string, message: any, data: T | null) => void>
+export interface Publisher extends pubSub {
+    sendMessage: Promise<(queue: string, message: any) => Promise<void>>
 }
-export interface Consumer<T> extends pubSub {
-    recieveMessage: Promise<(queue: string, message: any, data: T | null) => void>
+export interface Consumer extends pubSub {
+    recieveMessage: Promise<(queue: string, message: any) => Promise<void>>
 }
 
 export class PubSubEntity implements pubSub{
