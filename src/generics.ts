@@ -4,10 +4,10 @@ interface pubSub{
     connect: () => Promise<void>,
 }
 export interface Publisher extends pubSub {
-    sendMessage: Promise<(queue: string, message: any) => Promise<void>>
+    sendMessage: (queue: QueueTypes, message: any) => Promise<void>
 }
 export interface Consumer extends pubSub {
-    recieveMessage: Promise<(queue: string, message: any) => Promise<void>>
+    recieveMessage: (queue: QueueTypes, message: any) => Promise<void>
 }
 
 export class PubSubEntity implements pubSub{
@@ -18,6 +18,10 @@ export class PubSubEntity implements pubSub{
     }
 
     async connect() {
+        if(this.connection !== undefined){
+            console.log("connection already exists")
+            return
+        }
         try {
             const conectionRBM = await rbmq.connect({
                 password: "password",
@@ -25,8 +29,17 @@ export class PubSubEntity implements pubSub{
             })
         
             this.connection = conectionRBM
+
+            console.log("producer listening with sucess")
         } catch (error) {
             console.log(error)
         }
     }
+}
+
+
+export enum QueueTypes{
+    NEW_IOT_DEVICE_CONNECTED = "new-device",
+    SET_NEW_DEVICE_CONFIGURATION = "config-device",
+    SEND_TEST_MESSAGE = "test-message"
 }
